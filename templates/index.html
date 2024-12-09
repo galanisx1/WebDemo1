@@ -3,16 +3,798 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
-    <script>
-        function showLabel() {
-            document.getElementById("response").style.display = "block";
+    <title>Calendario Interactivo</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    font-size: 16px; /* Tamaño base de fuente */
+}
+
+.calendar {
+    margin-top: 15px;
+    width: 100%;
+    max-width: 600px;
+    font-size: 1rem;
+}
+
+.calendar td {
+    cursor: pointer;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.selected {
+    background-color: green;
+    color: white;
+}
+
+h1, h3 {
+    margin-top: 10px;
+}
+
+.pricing-tables {
+    display: none;
+    /*display: flex; */
+    flex-wrap: wrap; /* Asegura que las tablas se ajusten en pantallas pequeñas */
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.pricing-tables-credit {
+    display: none;
+    /*display: flex; */
+    flex-wrap: wrap; /* Asegura que las tablas se ajusten en pantallas pequeñas */
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.pricing-tables-extra {
+    display: none;
+    /*display: flex; */
+    flex-wrap: wrap; /* Asegura que las tablas se ajusten en pantallas pequeñas */
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.pricing-tables table {
+    flex: 1 1 calc(100% - 20px); /* Toma todo el ancho en pantallas pequeñas */
+    max-width: 30%; /* Máximo de tres tablas por fila en pantallas grandes */
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.pricing-tables-credit table {
+    flex: 1 1 calc(100% - 20px); /* Toma todo el ancho en pantallas pequeñas */
+    max-width: 30%; /* Máximo de tres tablas por fila en pantallas grandes */
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.pricing-tables-extra table {
+    flex: 1 1 calc(100% - 20px); /* Toma todo el ancho en pantallas pequeñas */
+    max-width: 30%; /* Máximo de tres tablas por fila en pantallas grandes */
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.pricing-tables th, .pricing-tables td {
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+.pricing-tables-credit th, .pricing-tables-credit td {
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+.pricing-tables-extra th, .pricing-tables-extra td {
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+.input-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.input-container select {
+    margin-bottom: 5px;
+    padding: 5px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.checkbox-container {
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
         }
-    </script>
+
+        .row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .time-checkbox, .pa-checkbox {
+            margin-right: 15px;
+        }
+
+        .label {
+            margin-right: 10px;
+        }
+
+.error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            visibility: hidden; /* Por defecto oculto */
+        }
+
+#subtotal_horarioregular {
+    font-size: 1rem;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .calendar td {
+        padding: 8px;
+    }
+
+    .pricing-tables table {
+        max-width: 100%; /* Ocupa todo el ancho */
+    }
+
+    .pricing-tables-credit table {
+        max-width: 100%; /* Ocupa todo el ancho */
+    }
+
+    .pricing-tables-extra table {
+        max-width: 100%; /* Ocupa todo el ancho */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 8px;
+    }
+
+    #subtotal_horarioregular {
+        font-size: 1.5rem;
+    }
+}
+
+    </style>
 </head>
 <body>
-    <h1>Hello World</h1>
-    <button onclick="showLabel()">Test</button>
-    <label id="response" style="display:none;">Well Done</label>
+    <h1>Calendario de Diciembre 2024 y Enero 2025</h1>
+
+    <!-- Calendario de Diciembre 2024 y Enero 2025 -->
+    <table class="calendar">
+        <tr>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+            <th>Sábado</th>
+            <th>Domingo</th>
+        </tr>
+        <tr>
+            <td class="disabled"></td> <!-- Sábado (30 de noviembre) -->
+            <td class="disabled"></td> <!-- Domingo (1 de diciembre) -->
+            <td class="disabled"></td> <!-- Lunes -->
+            <td class="disabled"></td> <!-- Martes -->
+            <td class="disabled"></td> <!-- Miércoles -->
+            <td class="disabled"></td> <!-- Jueves -->
+            <td class="disabled">1</td> <!-- Domingo (1 de diciembre) -->
+        </tr>
+        <tr>
+            <td class="disabled">2</td> <!-- Lunes -->
+            <td class="disabled">3</td> <!-- Martes -->
+            <td class="disabled">4</td> <!-- Miércoles -->
+            <td class="disabled">5</td> <!-- Jueves -->
+            <td class="disabled">6</td> <!-- Viernes -->
+            <td class="disabled">7</td> <!-- Sábado -->
+            <td class="disabled">8</td> <!-- Domingo -->
+        </tr>
+        <tr>
+            <td class="disabled">9</td> <!-- Lunes -->
+            <td class="disabled">10</td> <!-- Martes -->
+            <td class="disabled">11</td> <!-- Miércoles -->
+            <td class="disabled">12</td> <!-- Jueves -->
+            <td class="disabled">13</td> <!-- Viernes -->
+            <td class="disabled">14</td> <!-- Sábado -->
+            <td class="disabled">15</td> <!-- Domingo -->
+        </tr>
+        <tr>
+            <td>16</td> <!-- Lunes -->
+            <td>17</td> <!-- Martes -->
+            <td>18</td> <!-- Miércoles -->
+            <td>19</td> <!-- Jueves -->
+            <td>20</td> <!-- Viernes -->
+            <td class="disabled">21</td> <!-- Sábado -->
+            <td class="disabled">22</td> <!-- Domingo -->
+        </tr>
+        <tr>
+            <td>23</td> <!-- Lunes -->
+            <td>24</td> <!-- Martes -->
+            <td class="disabled">25</td> <!-- Miércoles (Navidad) -->
+            <td>26</td> <!-- Jueves -->
+            <td>27</td> <!-- Viernes -->
+            <td class="disabled">28</td> <!-- Sábado -->
+            <td class="disabled">29</td> <!-- Domingo -->
+        </tr>
+        <tr>
+            <td>30</td> <!-- Lunes -->
+            <td>31</td> <!-- Martes -->
+            <td class="disabled"></td>
+            <td class="disabled"></td>
+            <td class="disabled"></td>
+            <td class="disabled"></td>
+            <td class="disabled"></td>
+        </tr>
+        <!-- Primeras dos semanas de Enero 2025 -->
+        <tr>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+            <th>Sábado</th>
+            <th>Domingo</th>
+        </tr>
+        <tr>
+            <td class="disabled"></td> <!-- Lunes (30 de diciembre) -->
+            <td class="disabled"></td> <!-- Martes (31 de diciembre) -->
+            <td class="disabled">1</td> <!-- Miércoles (1 de enero) - Deshabilitado -->
+            <td>2</td> <!-- Jueves -->
+            <td>3</td> <!-- Viernes -->
+            <td class="disabled">4</td> <!-- Sábado -->
+            <td class="disabled">5</td> <!-- Domingo -->
+        </tr>
+        <tr>
+            <td>6</td> <!-- Lunes -->
+            <td>7</td> <!-- Martes -->
+            <td>8</td> <!-- Miércoles -->
+            <td>9</td> <!-- Jueves -->
+            <td>10</td> <!-- Viernes -->
+            <td class="disabled">11</td> <!-- Sábado -->
+            <td class="disabled">12</td> <!-- Domingo -->
+        </tr>
+    </table>
+
+    <!-- Nuevos campos de entrada para Participantes -->
+    <div class="input-container">
+        <div style="display: flex; align-items: center; gap: 0px;">
+            <label for="Participantes_hijos" style="font-size: 1em;">hijos:</label>
+            <select id="Participantes_hijos" name="Participantes_hijos">
+                <option value="">Seleccionar</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            
+            <label style="font-size: 0.9em; white-space: nowrap;">
+                <input type="checkbox" id="checkbox_primo" name="checkbox_primo"> Extender descuento a 1 primo
+            </label>
+        </div>
+    </div>
+
+    <div class="checkbox-container">
+        <!-- Row for 8am -->
+        <div class="row">
+            <div class="time-checkbox">
+                <label class="label">
+                    <input type="checkbox" id="8am"> 8am
+                </label>
+            </div>
+            <div class="pa-checkbox">
+                <label class="label">
+                    <input type="checkbox" id="8am-pa1" disabled> PA
+                </label>
+            </div>
+        </div>
+
+        <!-- Row for 2pm -->
+        <div class="row">
+            <div class="time-checkbox">
+                <label class="label">
+                    <input type="checkbox" id="2pm"> 2pm
+                </label>
+            </div>
+            <div class="pa-checkbox">
+                <label class="label">
+                    <input type="checkbox" id="2pm-pa1" disabled> PA
+                </label>
+            </div>
+        </div>
+
+        <!-- Row for 3pm -->
+        <div class="row">
+            <div class="time-checkbox">
+                <label class="label">
+                    <input type="checkbox" id="3pm"> 3pm
+                </label>
+            </div>
+            <div class="pa-checkbox">
+                <label class="label">
+                    <input type="checkbox" id="3pm-pa1" disabled> PA
+                </label>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Label para mostrar los días seleccionados -->
+    <h3>Seleccionados: <span id="Label_Dias_Seleccionados">0</span></h3>
+
+    <!-- Subtotal Horario Regular -->
+    <h3>Subtotal Horario Regular: $<span id="subtotal_horarioregular">0</span></h3>
+
+    <div class="input-container">
+        <label for="payment-method">Seleccionar método de pago:</label>
+        <select id="payment-method">
+            <option value="">Seleccione una opción</option>
+            <option value="credit-card">Tarjeta de crédito</option>
+            <option value="cash">Efectivo</option>
+        </select>
+        <p id="selected-method"></p>
+    </div>
+
+    <div class="input-container">
+        <label for="password-input">Administrador</label>
+        <input type="text" id="password-input" placeholder="Password">
+        <button id="mostrar-tablas-btn">Log In</button>
+        <p class="error-message" id="error-message">Contraseña incorrecta. Intenta nuevamente.</p>
+    </div>
+    
+    
+
+
+    <!-- Tabla con las etiquetas de días y valores -->
+    <!-- Pricing Tables -->
+    <div class="pricing-tables">
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 (1pE)</td>
+                <td id="valor_1_4_1p">$305</td>
+            </tr>
+            <tr>
+                <td>Días 5-9 (1pE)</td>
+                <td id="valor_5_9_1p">$288</td>
+            </tr>
+            <tr>
+                <td>Días 10-14 (1pE)</td>
+                <td id="valor_10_14_1p">$273</td>
+            </tr>
+            <tr>
+                <td>Días 15-18 (1pE)</td>
+                <td id="valor_15_18_1p">$265</td>
+            </tr>
+        </table>
+        
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 (2pE)</td>
+                <td id="valor_1_4_2p">$285</td>
+            </tr>
+            <tr>
+                <td>Días 5-9 (2pE)</td>
+                <td id="valor_5_9_2p">$265</td>
+            </tr>
+            <tr>
+                <td>Días 10-14 (2pE)</td>
+                <td id="valor_10_14_2p">$251</td>
+            </tr>
+            <tr>
+                <td>Días 15-18 (2pE)</td>
+                <td id="valor_15_18_2p">$245</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 (3pE)</td>
+                <td id="valor_1_4_3p">$260</td>
+            </tr>
+            <tr>
+                <td>Días 5-9 (3pE)</td>
+                <td id="valor_5_9_3p">$253</td>
+            </tr>
+            <tr>
+                <td>Días 10-14 (3pE)</td>
+                <td id="valor_10_14_3p">$241</td>
+            </tr>
+            <tr>
+                <td>Días 15-18 (3pE)</td>
+                <td id="valor_15_18_3p">$234</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="pricing-tables-credit">
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 (1pTC)</td>
+                <td id="valor_1_4_1p">$305</td>
+            </tr>
+            <tr>
+                <td>Días 5-9 (1pTC)</td>
+                <td id="valor_5_9_1p">$288</td>
+            </tr>
+            <tr>
+                <td>Días 10-14 (1pTC)</td>
+                <td id="valor_10_14_1p">$280</td>
+            </tr>
+            <tr>
+                <td>Días 15-18 (1pTC)</td>
+                <td id="valor_15_18_1p">$276</td>
+            </tr>
+        </table>
+        
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 (2pTC)</td>
+                <td id="valor_1_4_2p">$285</td>
+            </tr>
+            <tr>
+                <td>Días 5-9 (2pTC)</td>
+                <td id="valor_5_9_2p">$265</td>
+            </tr>
+            <tr>
+                <td>Días 10-14 (2pTC)</td>
+                <td id="valor_10_14_2p">$262</td>
+            </tr>
+            <tr>
+                <td>Días 15-18 (2pTC)</td>
+                <td id="valor_15_18_2p">$260</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 (3pTC)</td>
+                <td id="valor_1_4_3p">$260</td>
+            </tr>
+            <tr>
+                <td>Días 5-9 (3pTC)</td>
+                <td id="valor_5_9_3p">$253</td>
+            </tr>
+            <tr>
+                <td>Días 10-14 (3pTC)</td>
+                <td id="valor_10_14_3p">$251</td>
+            </tr>
+            <tr>
+                <td>Días 15-18 (3pTC)</td>
+                <td id="valor_15_18_3p">$249</td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div class="pricing-tables-extra">
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 1erP (NoPA)</td>
+                <td id="valor_1_4_1p_NoPA">$45</td>
+            </tr>
+            <tr>
+                <td>Días 5-60 1erP (NoPA)</td>
+                <td id="valor_5_60_1p_NoPA">$27</td>
+            </tr>
+        </table>
+        
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 1erP (SiPA)</td>
+                <td id="valor_1_4_1p_SiPA">$50</td>
+            </tr>
+            <tr>
+                <td>Días 5-60 1erP (SiPA)</td>
+                <td id="valor_5_60_1p_SiPA">$30</td>
+            </tr> 
+        </table>
+
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 PAdicional (NoPA)</td>
+                <td id="valor_1_4_add_NoPA">$23</td>
+            </tr>
+            <tr>
+                <td>Días 5-60 PAdicional (NoPA)</td>
+                <td id="valor_5_60_add_NoPA">$14</td>
+            </tr>
+        </table>
+        
+        <table>
+            <tr>
+                <th>Días</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Días 1-4 PAdicional (SiPA)</td>
+                <td id="valor_1_4_add_SiPA">$25</td>
+            </tr>
+            <tr>
+                <td>Días 5-60 PAdicional (SiPA)</td>
+                <td id="valor_5_60_add_SiPA">$15</td>
+            </tr> 
+        </table>        
+    </div>
+
+    <script>
+        // Variables para el cálculo de subtotales
+        let subtotal_horarioregular = 0;
+        let subtotal_horarioextendido = 0;
+        let entrada_total = 0;
+
+        // Variables para Participantes
+        let Var_Participantes_hijos = '';
+        let Var_Participantes_amigos = '';
+
+        // Variable para contar los días seleccionados
+        let Dias_Seleccionados = 0;
+
+        // Función para actualizar el Label con la cantidad de días seleccionados
+        function updateDiasSeleccionados() {
+            document.getElementById("Label_Dias_Seleccionados").textContent = Dias_Seleccionados;
+            updateSubtotalHorarioregular(); // Actualiza el subtotal cuando cambian los días seleccionados
+        }
+
+        // Función para calcular el subtotal horario regular
+        function updateSubtotalHorarioregular() {
+    const diasSeleccionados = Dias_Seleccionados;
+    const participantesHijos = parseInt(Var_Participantes_hijos) || 0;
+
+    // Determine pricing table based on number of participants
+    let valor = 0;
+
+    // Ensure `displayMethod` is updated correctly
+document.getElementById("payment-method").addEventListener("change", function () {
+    const selectedPaymentMethod = this.value;
+    displayMethod = selectedPaymentMethod === "credit-card" ? 
+                    "Tarjeta de crédito" : 
+                    "Efectivo";
+    document.getElementById("selected-method").textContent = 
+        `Método seleccionado: ${displayMethod}`;
+});
+
+
+if (diasSeleccionados >= 1 && diasSeleccionados <= 4) {
+    if (displayMethod === "Efectivo") {
+        // Logic for payment by credit card
+        valor = participantesHijos === 1 ? 305 : 
+                participantesHijos === 2 ? 285 : 
+                260; 
+    } else if (displayMethod === "Tarjeta de crédito") {
+        // Logic for payment by cash (if different)
+        valor = participantesHijos === 1 ? 305 :  // Example: Slightly discounted
+                participantesHijos === 2 ? 285 : 
+                260;
+    }
+} else if (diasSeleccionados >= 5 && diasSeleccionados <= 9) {
+    if (displayMethod === "Efectivo") {
+        valor = participantesHijos === 1 ? 288 : 
+                participantesHijos === 2 ? 265 : 
+                253;
+    } else if (displayMethod === "Tarjeta de crédito") {
+        valor = participantesHijos === 1 ? 288 : 
+                participantesHijos === 2 ? 265 : 
+                253;
+    }
+} else if (diasSeleccionados >= 10 && diasSeleccionados <= 14) {
+    if (displayMethod === "Efectivo") {
+        valor = participantesHijos === 1 ? 273 : 
+                participantesHijos === 2 ? 251 : 
+                241;
+    } else if (displayMethod === "Tarjeta de crédito") {
+        valor = participantesHijos === 1 ? 280 : 
+                participantesHijos === 2 ? 262 : 
+                251;
+    }
+} else if (diasSeleccionados >= 15 && diasSeleccionados <= 18) {
+    if (displayMethod === "Efectivo") {
+        valor = participantesHijos === 1 ? 265 : 
+                participantesHijos === 2 ? 245 : 
+                234;
+    } else if (displayMethod === "Tarjeta de crédito") {
+        valor = participantesHijos === 1 ? 276 : 
+                participantesHijos === 2 ? 260 : 
+                249;
+    }
+}
+
+
+           
+            // Calcula el subtotal
+            subtotal_horarioregular = valor * diasSeleccionados * participantesHijos;
+
+            // Muestra el subtotal en el documento
+            document.getElementById("subtotal_horarioregular").textContent = subtotal_horarioregular;
+        }
+
+        // Seleccionar días del calendario
+        document.querySelectorAll('.calendar td').forEach(cell => {
+            // Verificar si el día no es sábado, domingo, ni del 1 al 15, ni el 25
+            if (!cell.classList.contains('disabled') && cell.innerText.trim() !== "") {
+                cell.addEventListener('click', () => {
+                    // Si la celda no está seleccionada, se selecciona
+                    if (!cell.classList.contains('selected')) {
+                        cell.classList.add('selected');
+                        Dias_Seleccionados++; // Incrementa el contador
+                    } else {
+                        // Si la celda está seleccionada, se deselecciona
+                        cell.classList.remove('selected');
+                        Dias_Seleccionados--; // Decrementa el contador
+                    }
+                    updateDiasSeleccionados(); // Actualiza el Label
+                });
+            }
+        });
+
+        // Evento para capturar los valores de los select de Participantes
+        document.getElementById('Participantes_hijos').addEventListener('change', function() {
+            Var_Participantes_hijos = this.value;
+        });
+
+        document.getElementById('Participantes_amigos').addEventListener('change', function() {
+            Var_Participantes_amigos = this.value;
+        });
+    </script>
+
+
+<script>
+    // Función para manejar el evento del botón
+    document.getElementById('mostrar-tablas-btn').addEventListener('click', () => {
+            const passwordInput = document.getElementById('password-input').value;
+            const errorMessage = document.getElementById('error-message');
+            const tablas = document.querySelector('.pricing-tables');
+            const tablas2 = document.querySelector('.pricing-tables-credit');
+            const tablas3 = document.querySelector('.pricing-tables-extra');
+
+            if (passwordInput === '1234') {
+                errorMessage.style.visibility = 'hidden'; // Oculta el mensaje de error
+                tablas.style.display = 'flex'; // Muestra las tablas
+                tablas2.style.display = 'flex'; // Muestra las tablas
+                tablas3.style.display = 'flex'; // Muestra las tablas
+            } else {
+                errorMessage.style.visibility = 'visible'; // Muestra el mensaje de error
+            }
+        });
+
+        // Capturar la selección del método de pago
+        document.getElementById("payment-method").addEventListener("change", function () {
+            selectedPaymentMethod = this.value;
+            const displayMethod = selectedPaymentMethod === "credit-card" ? 
+                                  "Tarjeta de crédito" : 
+                                  "Efectivo";
+            /*document.getElementById("selected-method").textContent = 
+                `Método seleccionado: ${displayMethod}`; */
+        });
+</script>
+
+<script>
+    // Variables to track extra hours and PA selection
+    let hextra8am = 0;
+    let hextra2pm = 0;
+    let hextra3pm = 0;
+    let PA8am = 0;
+    let PA2pm = 0;
+    let PA3pm = 0;
+
+    // Function to update checkboxes and variables
+    function updateCheckboxes() {
+        const checkbox8am = document.getElementById("8am");
+        const checkbox8amPA = document.getElementById("8am-pa1");
+        const checkbox2pm = document.getElementById("2pm");
+        const checkbox2pmPA = document.getElementById("2pm-pa1");
+        const checkbox3pm = document.getElementById("3pm");
+        const checkbox3pmPA = document.getElementById("3pm-pa1");
+
+        // Update 8am logic
+        if (!checkbox8am.checked) {
+            hextra8am = 0;
+            checkbox8amPA.checked = false;
+            checkbox8amPA.disabled = true;
+            PA8am = 0;
+        } else {
+            hextra8am = 1;
+            checkbox8amPA.disabled = false;
+            PA8am = checkbox8amPA.checked ? 1 : 0;
+        }
+
+        // Update 2pm logic
+        if (!checkbox2pm.checked) {
+            hextra2pm = 0;
+            checkbox2pmPA.checked = false;
+            checkbox2pmPA.disabled = true;
+            PA2pm = 0;
+        } else {
+            hextra2pm = 1;
+            checkbox2pmPA.disabled = false;
+            PA2pm = checkbox2pmPA.checked ? 1 : 0;
+        }
+
+        // Update 3pm logic
+        if (!checkbox3pm.checked) {
+            hextra3pm = 0;
+            checkbox3pmPA.checked = false;
+            checkbox3pmPA.disabled = true;
+            PA3pm = 0;
+        } else {
+            hextra3pm = 1;
+            checkbox3pmPA.disabled = false;
+            PA3pm = checkbox3pmPA.checked ? 1 : 0;
+        }
+    }
+
+    // Add event listeners to checkboxes
+    document.getElementById("8am").addEventListener("change", updateCheckboxes);
+    document.getElementById("8am-pa1").addEventListener("change", updateCheckboxes);
+    document.getElementById("2pm").addEventListener("change", updateCheckboxes);
+    document.getElementById("2pm-pa1").addEventListener("change", updateCheckboxes);
+    document.getElementById("3pm").addEventListener("change", updateCheckboxes);
+    document.getElementById("3pm-pa1").addEventListener("change", updateCheckboxes);
+</script>
+
+
 </body>
 </html>
