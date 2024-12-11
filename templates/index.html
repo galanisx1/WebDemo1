@@ -40,7 +40,7 @@
 }
 
 h1, h3 {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .pricing-tables {
@@ -126,7 +126,7 @@ h1, h3 {
 .checkbox-container {
             display: flex;
             flex-direction: column;
-            margin: 20px;
+            margin: 10px;
         }
 
         .row {
@@ -151,7 +151,7 @@ h1, h3 {
         }
 
 #subtotal_horarioregular {
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
 /* Media Queries */
@@ -181,7 +181,16 @@ h1, h3 {
     #subtotal_horarioregular {
         font-size: 1.5rem;
     }
+    
 }
+
+
+    .h3-style {
+        font-size: 1.5em;
+        font-weight: bold; /* Matches default <h3> style */
+    }
+
+
     </style>
 
 <title>Checkbox Logic</title>
@@ -189,7 +198,7 @@ h1, h3 {
     .checkbox-container {
         display: flex;
         flex-direction: column;
-        margin: 20px;
+        margin: 5px;
     }
 
     .row {
@@ -208,8 +217,8 @@ h1, h3 {
     }
 
     input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
+        width: 15px;
+        height: 15px;
         vertical-align: middle;
     }
 
@@ -325,10 +334,24 @@ h1, h3 {
         </tr>
     </table>
 
+    <hr style="border: 1px solid rgb(216, 216, 216); margin: 0px 0; width: 50%;">
+
+    <div class="input-container">
+        <label for="payment-method">Seleccionar método de pago:</label>
+        <select id="payment-method">
+            <option value="">Seleccione una opción</option>
+            <option value="credit-card">Tarjeta de crédito</option>
+            <option value="cash">Efectivo</option>
+        </select>
+        <p id="selected-method"></p>
+    </div>
+
+    <hr style="border: 1px solid rgb(216, 216, 216); margin: 0px 0; width: 50%;">
+
     <!-- Nuevos campos de entrada para Participantes -->
     <div class="input-container">
-        <div style="display: flex; align-items: center; gap: 0px;">
-            <label for="Participantes_hijos" style="font-size: 1em;">hijos:</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label for="Participantes_hijos" style="font-size: 1em;">Hijos: </label>
             <select id="Participantes_hijos" name="Participantes_hijos">
                 <option value="">Seleccionar</option>
                 <option value="1">1</option>
@@ -339,10 +362,14 @@ h1, h3 {
             </select>
             
             <label style="font-size: 0.9em; white-space: nowrap;">
-                <input type="checkbox" id="checkbox_primo" name="checkbox_primo"> Extender descuento a 1 primo
+                <input type="checkbox" id="checkbox_primo" name="checkbox_primo" disabled> Extender descuento a 1 primo
             </label>
         </div>
     </div>
+
+    <h3>Total de Participantes: <span id="totalParticipantesLabel">0</span></h3>
+    
+    <hr style="border: 1px solid rgb(216, 216, 216); margin: -2px 0; width: 50%;">
 
     <div class="checkbox-container">
         <!-- Row for 8am -->
@@ -390,26 +417,26 @@ h1, h3 {
             </div>
         </div>        
     </div>
-    
+    <hr style="border: 1px solid rgb(216, 216, 216); margin: 5px 0; width: 50%;">
 
     <!-- Label para mostrar los días seleccionados -->
-    <h3>Seleccionados: <span id="Label_Dias_Seleccionados">0</span></h3>
- 
+    <h3>Días Seleccionados: <span id="Label_Dias_Seleccionados">0</span></h3>
+
+    <hr style="border: 1px solid rgb(216, 216, 216); margin: 5px 0; width: 50%;">
+
     <!-- Subtotal Horario Regular -->
-    <h3>Subtotal Horario Regular: $<span id="subtotal_horarioregular">0</span></h3>
+    <h3>Horario Regular: $<span id="subtotal_horarioregular">0</span></h3>
 
     <!-- Nuevo Label para Horario Extra -->
-    <h3>Horario Extra: $<span id="horario_extra">0</span></h3>
+    <h3 style="text-align: left;">Horario Extra: $<span id="horario_extra">0</span></h3>
+    
 
-    <div class="input-container">
-        <label for="payment-method">Seleccionar método de pago:</label>
-        <select id="payment-method">
-            <option value="">Seleccione una opción</option>
-            <option value="credit-card">Tarjeta de crédito</option>
-            <option value="cash">Efectivo</option>
-        </select>
-        <p id="selected-method"></p>
-    </div>
+    <hr style="border: 1px solid rgb(216, 216, 216); margin: 10px 0; width: 50%;">
+  
+    <!-- Total a Pagar -->
+    <label id="TotalApagar" class="h3-style">Total a Pagar: $0</label>
+
+    <hr style="border: 1px solid rgb(216, 216, 216); margin: 10px 0; width: 50%;">
 
     <div class="input-container">
         <label for="password-input">Administrador</label>
@@ -418,8 +445,6 @@ h1, h3 {
         <p class="error-message" id="error-message">Contraseña incorrecta. Intenta nuevamente.</p>
     </div>
     
-    
-
 
     <!-- Tabla con las etiquetas de días y valores -->
     <!-- Pricing Tables -->
@@ -628,125 +653,130 @@ h1, h3 {
         </table>        
     </div>
 
+    
     <script>
-        // Variables para el cálculo de subtotales
         let subtotal_horarioregular = 0;
         let subtotal_horarioextendido = 0;
         let entrada_total = 0;
-
-        // Variables para Participantes
+    
         let Var_Participantes_hijos = '';
         let Var_Participantes_amigos = '';
-
-        // Variable para contar los días seleccionados
         let Dias_Seleccionados = 0;
+        let Total_Participantes = 0;
+        let displayMethod = "Efectivo"; // Valor inicial
+    
+        function updateTotalApagar() {
+            const horarioExtra = parseFloat(document.getElementById("horario_extra").textContent) || 0;
+            const subtotalHorarioRegular = parseFloat(subtotal_horarioregular) || 0;
+            const totalApagar = horarioExtra + subtotalHorarioRegular;
+    
+        // Format the total amount with commas separating thousands
+            const formattedTotalApagar = totalApagar.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
 
-        // Función para actualizar el Label con la cantidad de días seleccionados
+            // Set the formatted total amount to the element
+            const totalApagarElement = document.getElementById("TotalApagar");
+            totalApagarElement.textContent = `Total a Pagar: $${formattedTotalApagar}`;
+
+            // Change the background color to blue
+            totalApagarElement.style.backgroundColor = "rgb(182, 5, 206)";
+            // Change the text color to white for better readability
+            totalApagarElement.style.color = 'white';
+
+            // Ensure padding and text alignment for better visibility
+            totalApagarElement.style.padding = '5px';
+            totalApagarElement.style.textAlign = 'center';
+        }
+                
         function updateDiasSeleccionados() {
             document.getElementById("Label_Dias_Seleccionados").textContent = Dias_Seleccionados;
-            updateSubtotalHorarioregular(); // Actualiza el subtotal cuando cambian los días seleccionados
+            updateSubtotalHorarioregular();
         }
-
-        // Función para calcular el subtotal horario regular
+    
         function updateSubtotalHorarioregular() {
-    const diasSeleccionados = Dias_Seleccionados;
-    const participantesHijos = parseInt(Var_Participantes_hijos) || 0;
-
-    // Determine pricing table based on number of participants
-    let valor = 0;
-
-    // Ensure `displayMethod` is updated correctly
-document.getElementById("payment-method").addEventListener("change", function () {
-    const selectedPaymentMethod = this.value;
-    displayMethod = selectedPaymentMethod === "credit-card" ? 
-                    "Tarjeta de crédito" : 
-                    "Efectivo";
-    document.getElementById("selected-method").textContent = 
-        `Método seleccionado: ${displayMethod}`;
-});
-
-
-if (diasSeleccionados >= 1 && diasSeleccionados <= 4) {
-    if (displayMethod === "Efectivo") {
-        // Logic for payment by credit card
-        valor = participantesHijos === 1 ? 305 : 
-                participantesHijos === 2 ? 285 : 
-                260; 
-    } else if (displayMethod === "Tarjeta de crédito") {
-        // Logic for payment by cash (if different)
-        valor = participantesHijos === 1 ? 305 :  // Example: Slightly discounted
-                participantesHijos === 2 ? 285 : 
-                260;
-    }
-} else if (diasSeleccionados >= 5 && diasSeleccionados <= 9) {
-    if (displayMethod === "Efectivo") {
-        valor = participantesHijos === 1 ? 288 : 
-                participantesHijos === 2 ? 265 : 
-                253;
-    } else if (displayMethod === "Tarjeta de crédito") {
-        valor = participantesHijos === 1 ? 288 : 
-                participantesHijos === 2 ? 265 : 
-                253;
-    }
-} else if (diasSeleccionados >= 10 && diasSeleccionados <= 14) {
-    if (displayMethod === "Efectivo") {
-        valor = participantesHijos === 1 ? 273 : 
-                participantesHijos === 2 ? 251 : 
-                241;
-    } else if (displayMethod === "Tarjeta de crédito") {
-        valor = participantesHijos === 1 ? 280 : 
-                participantesHijos === 2 ? 262 : 
-                251;
-    }
-} else if (diasSeleccionados >= 15 && diasSeleccionados <= 18) {
-    if (displayMethod === "Efectivo") {
-        valor = participantesHijos === 1 ? 265 : 
-                participantesHijos === 2 ? 245 : 
-                234;
-    } else if (displayMethod === "Tarjeta de crédito") {
-        valor = participantesHijos === 1 ? 276 : 
-                participantesHijos === 2 ? 260 : 
-                249;
-    }
-}
-
-
-           
-            // Calcula el subtotal
+            const diasSeleccionados = Dias_Seleccionados;
+            const participantesHijos = parseInt(Var_Participantes_hijos) || 0;
+    
+            let valor = 0;
+    
+            if (diasSeleccionados >= 1 && diasSeleccionados <= 4) {
+                valor = displayMethod === "Efectivo" ?
+                    (participantesHijos === 1 ? 305 : participantesHijos === 2 ? 285 : 260) :
+                    (participantesHijos === 1 ? 305 : participantesHijos === 2 ? 285 : 260);
+            } else if (diasSeleccionados >= 5 && diasSeleccionados <= 9) {
+                valor = displayMethod === "Efectivo" ?
+                    (participantesHijos === 1 ? 288 : participantesHijos === 2 ? 265 : 253) :
+                    (participantesHijos === 1 ? 288 : participantesHijos === 2 ? 265 : 253);
+            } else if (diasSeleccionados >= 10 && diasSeleccionados <= 14) {
+                valor = displayMethod === "Efectivo" ?
+                    (participantesHijos === 1 ? 273 : participantesHijos === 2 ? 251 : 241) :
+                    (participantesHijos === 1 ? 280 : participantesHijos === 2 ? 262 : 251);
+            } else if (diasSeleccionados >= 15 && diasSeleccionados <= 18) {
+                valor = displayMethod === "Efectivo" ?
+                    (participantesHijos === 1 ? 265 : participantesHijos === 2 ? 245 : 234) :
+                    (participantesHijos === 1 ? 276 : participantesHijos === 2 ? 260 : 249);
+            }
+    
             subtotal_horarioregular = valor * diasSeleccionados * participantesHijos;
-
-            // Muestra el subtotal en el documento
-            document.getElementById("subtotal_horarioregular").textContent = subtotal_horarioregular;
+            document.getElementById("subtotal_horarioregular").textContent = subtotal_horarioregular.toFixed(2);
+            updateTotalApagar();
         }
-
-        // Seleccionar días del calendario
+    
+        document.getElementById("payment-method").addEventListener("change", function () {
+            displayMethod = this.value === "credit-card" ? "Tarjeta de crédito" : "Efectivo";
+            updateSubtotalHorarioregular();
+        });
+    
         document.querySelectorAll('.calendar td').forEach(cell => {
-            // Verificar si el día no es sábado, domingo, ni del 1 al 15, ni el 25
             if (!cell.classList.contains('disabled') && cell.innerText.trim() !== "") {
                 cell.addEventListener('click', () => {
-                    // Si la celda no está seleccionada, se selecciona
                     if (!cell.classList.contains('selected')) {
                         cell.classList.add('selected');
-                        Dias_Seleccionados++; // Incrementa el contador
+                        Dias_Seleccionados++;
                     } else {
-                        // Si la celda está seleccionada, se deselecciona
                         cell.classList.remove('selected');
-                        Dias_Seleccionados--; // Decrementa el contador
+                        Dias_Seleccionados--;
                     }
-                    updateDiasSeleccionados(); // Actualiza el Label
+                    updateDiasSeleccionados();
                 });
             }
         });
-
-        // Evento para capturar los valores de los select de Participantes
-        document.getElementById('Participantes_hijos').addEventListener('change', function() {
-            Var_Participantes_hijos = this.value;
+    
+        document.getElementById('Participantes_hijos').addEventListener('change', function () {
+            updateTotalParticipantes();
         });
+    
+        document.getElementById('checkbox_primo').addEventListener('change', function () {
+            updateTotalParticipantes();
+        });
+    
+        function updateTotalParticipantes() {
+            const selectParticipantesHijos = document.getElementById('Participantes_hijos');
+            const checkboxPrimo = document.getElementById('checkbox_primo');
+            const totalParticipantesLabel = document.getElementById('totalParticipantesLabel');
+    
+            let participantesHijos = parseInt(selectParticipantesHijos.value) || 0;
 
+            if (participantesHijos = parseInt(selectParticipantesHijos.value) || 0){
+                checkbox_primo.disabled = false;
+            }
+    
+            if (checkboxPrimo.checked) {
+                participantesHijos += 1;
+            }
+    
+            totalParticipantesLabel.textContent = participantesHijos;
+            Var_Participantes_hijos = participantesHijos.toString();
+            updateSubtotalHorarioregular();
+        }
+    
         document.getElementById('Participantes_amigos').addEventListener('change', function() {
             Var_Participantes_amigos = this.value;
         });
     </script>
+    
 
 
 <script>
@@ -843,6 +873,8 @@ function updateHorarioExtra() {
     const checkbox8amPA = document.getElementById("8am-pa1").checked;
     const checkbox2pm = document.getElementById("2pm").checked;
     const checkbox2pmPA = document.getElementById("2pm-pa1").checked;
+    const checkbox3pm = document.getElementById("3pm").checked;
+    const checkbox3pmPA = document.getElementById("3pm-pa1").checked;
 
     let extraSumarParticipante = 0;
     let extraSumarParticipante2pm = 0;
@@ -915,10 +947,42 @@ function updateHorarioExtra() {
         hExtra2pm = ((30 * 1) * diasSeleccionados) + extraSumarParticipante2pm;
     }
 
+// Calculo para las 3pm
+    // Calcula Extra_Sumar_Participante solo si hay al menos 2 hijos
+    if (participantesHijos >= 2) {
+        if (checkbox3pm && !checkbox3pmPA && diasSeleccionados >= 1 && diasSeleccionados <= 4) {
+            extraSumarParticipante3pm = 23 * (participantesHijos - 1) * diasSeleccionados;
+        } else if (checkbox3pm && checkbox3pmPA && diasSeleccionados >= 1 && diasSeleccionados <= 4) {
+            extraSumarParticipante3pm = 25 * (participantesHijos - 1) * diasSeleccionados;
+        } else if (checkbox3pm && !checkbox3pmPA && diasSeleccionados >= 5) {
+            extraSumarParticipante3pm = 14 * (participantesHijos - 1) * diasSeleccionados;
+        } else {
+            extraSumarParticipante3pm = 15 * (participantesHijos - 1) * diasSeleccionados;
+        }
+    }
+
+    // Calcula HExtra según las condiciones
+    if (checkbox3pm && !checkbox3pmPA && diasSeleccionados >= 1 && diasSeleccionados <= 4) {
+        hExtra3pm = ((45 * 1) * diasSeleccionados) + extraSumarParticipante2pm;
+    }
+    
+    if (checkbox3pm && !checkbox3pmPA && diasSeleccionados >= 5) {
+        hExtra3pm = ((27 * 1) * diasSeleccionados) + extraSumarParticipante3pm;
+    }
+
+    if (checkbox3pm && checkbox3pmPA && diasSeleccionados >= 1 && diasSeleccionados <= 4) {
+        hExtra3pm = ((50 * 1) * diasSeleccionados) + extraSumarParticipante3pm;
+    }
+    
+    if (checkbox3pm && checkbox3pmPA && diasSeleccionados >= 5) {
+        hExtra3pm = ((30 * 1) * diasSeleccionados) + extraSumarParticipante3pm;
+    }
+
     // Sumatoria de Horas Extras
     hExtraTotal = hExtra8am + hExtra2pm + hExtra3pm
     // Actualiza el valor en el documento
-    document.getElementById("horario_extra").textContent = hExtraTotal;
+    document.getElementById("horario_extra").textContent = hExtraTotal.toFixed(2);
+    updateTotalApagar(); // Actualiza el total
 }
 
 // Llama a updateHorarioExtra cuando cambian las condiciones relevantes
@@ -927,6 +991,8 @@ document.getElementById("8am").addEventListener("change", updateHorarioExtra);
 document.getElementById("8am-pa1").addEventListener("change", updateHorarioExtra);
 document.getElementById("2pm").addEventListener("change", updateHorarioExtra);
 document.getElementById("2pm-pa1").addEventListener("change", updateHorarioExtra);
+document.getElementById("3pm").addEventListener("change", updateHorarioExtra);
+document.getElementById("3pm-pa1").addEventListener("change", updateHorarioExtra);
 document.querySelectorAll('.calendar td').forEach(cell => {
     cell.addEventListener('click', updateHorarioExtra);
 });
